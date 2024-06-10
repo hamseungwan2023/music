@@ -5,6 +5,7 @@ import com.prac.music.domain.user.dto.LoginResponseDto;
 import com.prac.music.domain.user.dto.SignoutRequestDto;
 import com.prac.music.domain.user.dto.SignupRequestDto;
 import com.prac.music.domain.user.entity.User;
+import com.prac.music.domain.user.entity.UserStatusEnum;
 import com.prac.music.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,7 +34,7 @@ public class UserService {
     public User createUser(SignupRequestDto requestDto, MultipartFile file) throws IOException {
         String userId = requestDto.getUserId();
         String password = passwordEncoder.encode(requestDto.getPassword());
-        requestDto.setPassword(password);
+
         String imageUrl = "";
         if(file != null && !file.isEmpty()) {
           imageUrl = s3Service.s3Upload(file);
@@ -46,7 +47,16 @@ public class UserService {
             throw new IllegalArgumentException("이미 중복된 사용자가 존재합니다.");
         }
 
-        User user = new User(requestDto, imageUrl);
+        User user = User.builder()
+                .userId(userId)
+                .password(password)
+                .name(requestDto.getName())
+                .email(requestDto.getEmail())
+                .intro(requestDto.getIntro())
+                .userStatusEnum(UserStatusEnum.NORMAL)
+                .profileImage(imageUrl)
+                .build();
+
         return userRepository.save(user);
     }
 
