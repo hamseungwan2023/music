@@ -2,7 +2,6 @@ package com.prac.music.service;
 
 import com.prac.music.domain.board.dto.BoardRequestDto;
 import com.prac.music.domain.board.dto.BoardResponseDto;
-import com.prac.music.domain.board.entity.Board;
 import com.prac.music.domain.board.repository.BoardRepository;
 import com.prac.music.domain.board.service.BoardService;
 import com.prac.music.domain.user.entity.User;
@@ -14,9 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -24,8 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class) // @Mock 사용을 위해 설정합니다.
@@ -40,7 +34,6 @@ public class BoardServiceTest {
     BoardService boardService;
 
     User user;
-    Board board;
 
     @BeforeEach
     public void setUp() {
@@ -51,7 +44,7 @@ public class BoardServiceTest {
                 .password("fdsafsad")
                 .build();
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user)); // 사용자 조회 설정
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user)); // 사용자 조회 설정
     }
 
     @Test
